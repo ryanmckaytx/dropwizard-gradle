@@ -1,30 +1,16 @@
 apply plugin: 'java'
-apply plugin: 'gradle-one-jar'
-apply plugin: 'application'
 apply plugin: 'eclipse'
+apply plugin: 'shadow'
 
-// Use Java 7 by default
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
 // UTF-8 should be standard by now. So use it!
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-// The main class of the application
+version = '1.0-SNAPSHOT'
 mainClassName = 'com.example.helloworld.HelloWorldService'
 
-// Add Gradle OneJar Plugin, see https://github.com/rholder/gradle-one-jar
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.github.rholder:gradle-one-jar:1.0.3'
-    }
-}
-
-// Set our project variables
 project.ext {
     dropwizardVersion = '0.6.2'
 }
@@ -43,21 +29,34 @@ dependencies {
     )
 }
 
-// Configure the oneJar task
-task oneJar(type: OneJar) {
-    mainClass = mainClassName
+jar {
+	manifest {
+		attributes(
+			"Implementation-Title": "Gradle", 
+			"Implementation-Version": version,
+			"Main-Class": mainClassName
+		)
+	}
 }
 
-// Configure the run task to start the Dropwizard service
-run {
-    args 'server', './src/dist/config/helloworld.yml'
-
+shadow {
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.6'
 }
 
-artifacts {
-    oneJar
+buildscript {
+    repositories {
+        maven {
+            name 'Gradle Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+    }
+    dependencies {
+        classpath 'org.gradle.plugins:shadow:0.7.4'
+    }
 }
+
