@@ -9,10 +9,10 @@ targetCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 version = '1.0-SNAPSHOT'
-mainClassName = 'com.example.helloworld.HelloWorldService'
 
 project.ext {
     dropwizardVersion = '0.6.2'
+    mainClassName = 'com.example.helloworld.HelloWorldService'
 }
 
 repositories {
@@ -42,10 +42,6 @@ jar {
 shadow {
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.6'
 }
 
 buildscript {
